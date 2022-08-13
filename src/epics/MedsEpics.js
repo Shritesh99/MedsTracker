@@ -1,16 +1,21 @@
 import { ofType } from "redux-observable";
 import { map, mergeMap, takeUntil } from "rxjs";
 import { ajax } from "rxjs/ajax";
-import { MedsAction } from "../actions";
+import { actions } from "../slices";
+
 // TODO: Add Api
 export const fetchMedsEpic = (action$) =>
 	action$.pipe(
-		ofType(MedsAction.FETCH_MEDS),
+		ofType(actions.meds.fetchMeds.match),
 		mergeMap((action) =>
 			ajax.getJSON(``).pipe(
-				map((response) => MedsAction.fetchMedsFulfilled(response)),
+				map((response) =>
+					actions.meds.fetchMedsFulfilled(response)
+				),
 				takeUntil(
-					action$.pipe(ofType(MedsAction.FETCH_MEDS_CANCLED))
+					action$.pipe(
+						ofType(actions.meds.fetchMedsCancled.match)
+					)
 				)
 			)
 		)
@@ -18,12 +23,12 @@ export const fetchMedsEpic = (action$) =>
 
 export const fetchMedEpic = (action$) =>
 	action$.pipe(
-		ofType(MedsAction.FETCH_MED),
+		ofType(actions.med.fetchMed.match),
 		mergeMap((action) =>
 			ajax.getJSON(``).pipe(
-				map((response) => MedsAction.fetchMedFulfilled(response)),
+				map((response) => actions.med.fetchMedFulfilled(response)),
 				takeUntil(
-					action$.pipe(ofType(MedsAction.FETCH_MED_CANCLED))
+					action$.pipe(ofType(actions.med.fetchMedCancled.match))
 				)
 			)
 		)
